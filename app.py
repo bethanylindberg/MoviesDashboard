@@ -43,10 +43,7 @@ def actor(selection):
     # Create our session (link) from Python to the DB
     session = Session(engine)
     selection = str(selection)
-    data = session.query(Actor.gender,Actor.rank,Movies.title,Actor.credit,Movies.plot,Movies.imdb_rating,Movies.box_office,\
-                        Movies.type,Movies.released,Movies.runtime,Movies.genre,Movies.rt_rating).\
-                        filter(Movies.imdb_id == Actor.imdb_id).\
-                        filter(Actor.name == selection).all()
+    data = session.query(*sel).filter(Movies.imdb_id == Actor.imdb_id).filter(Actor.name == selection).all()
 
     movies = []
 
