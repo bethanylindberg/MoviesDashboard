@@ -1,9 +1,14 @@
+import pandas as pd
 import numpy as np
-import datetime as dt
+
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, func
-from flask import Flask, jsonify
+from sqlalchemy import create_engine
+
+from flask import Flask, jsonify, render_template
+from flask_sqlalchemy import SQLAlchemy
+
+
 
 #################################################
 # Database Setup
@@ -33,9 +38,10 @@ app = Flask(__name__)
 #################################################
 
 @app.route("/")
-def welcome():
-    """Home Page."""
-    return ("Home Page")
+def index():
+    """Return the homepage."""
+    return render_template("index.html")
+
 
 @app.route("/<selection>")
 def actor(selection):
