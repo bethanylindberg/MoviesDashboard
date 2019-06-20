@@ -1,4 +1,7 @@
 
+let selection = "Morgan Freeman"
+// let url = `./${selection}`;
+let url = "../Output/query.json"
 //tooltip
 const tooltip = d3.select("body")
     .append("div")
@@ -51,7 +54,6 @@ function drawDotplot(selector,url){
       moviesReleased.forEach(function(d){
         d.title = d.title;
         d.released = parseInt((d.released).slice(0,4));
-        d.box_office = +d.box_office
       });
       // Configure x scale
       let x = d3.scaleLinear()
@@ -92,7 +94,7 @@ function drawDotplot(selector,url){
                     released: p.released,
                     type: p.type,
                     credit: p.credit,
-                    radius: (x(d.x1)-x(d.x0))/2
+                    radius: (x(d.x1)-x(d.x0))
                   }
           }))
         .enter()
@@ -106,8 +108,7 @@ function drawDotplot(selector,url){
           .on("mouseout", tooltipOff)
           .transition()
             .duration(500)
-            .attr("r", function(d) {
-            return (d.length==0) ? 0 : d.radius; })
+            .attr("r", 10)
     
       binContainerEnter.merge(binContainer)
           .attr("transform", d => `translate(${x(d.x0)}, ${height})`)
@@ -119,17 +120,42 @@ function drawDotplot(selector,url){
       .call(d3.axisBottom(x)); 
     
     });
+
+    function tooltipOn(d) {
+      //x position of parent g element
+      let gParent = d3.select(this.parentElement)
+      let translateValue = gParent.attr("transform")
+      
+      let gX = translateValue.split(",")[0].split("(")[1]
+      let gY = height + (+d3.select(this).attr("cy")-50)
+      
+      d3.select(this)
+          .classed("selected", true)
+      tooltip.transition()
+              .duration(200)
+              .style("opacity", .9);
+      tooltip.html(`${d.title}<br/>Year Released: ${d.released}<br/>Credit: ${d.credit}<br/>Credit Type: ${d.type}`)
+          .style("left", gX + "px")
+          .style("top", gY + "px");
+  }//tooltipOn
+      
+  function tooltipOff(d) {
+      d3.select(this)
+          .classed("selected", false);
+          tooltip.transition()
+              .duration(500)
+              .style("opacity", 0);
+  }//tooltipOff
 };    
 function drawWordCloud(selector,url){
     d3.json(url).then(function(data){
         // Store movies object
         let movies = data[selection].movies;
-    
         // Filter out movies with no release date
         let words = [];
         for (var i = 0; i < movies.length; i++){
             if (movies[i].genre !== null){
-            words.push.apply(words, (movies[i].genre.split(', ')));
+                words.push.apply(words, (movies[i].genre.split(', ')));
             }
             }
         // Create word frequency object to feed to draw function
@@ -160,7 +186,7 @@ function drawWordCloud(selector,url){
                 .timeInterval(20)
                 .words(frequency)
                 .rotate(0)
-                .fontSize(function(d) { return sizeScale(d.size); })
+                .fontSize(d => sizeScale(d.size))
                 .on("end", draw)
                 .start();
     
@@ -170,7 +196,7 @@ function drawWordCloud(selector,url){
                     .attr("height", 250)
                     .attr("class", "wordcloud")
                     .append("g")
-                    .attr("transform", "translate(220,100)")
+                    .attr("transform", "translate(225,100)")
                     .selectAll("text")
                     .data(words)
                     .enter().append("text")
@@ -187,14 +213,27 @@ function drawWordCloud(selector,url){
 function drawBoxOffice(selector,url){
     d3.json(url).then(function(data){
     let movies = data[selection].movies;
+    let actorName = selection;
+    let rank = data[selection].rank;  
 
-    let boxOfficeTotal = 0; 
+    let moviesReleased = [];
     for (var i = 0; i < movies.length; i++){
-        boxOfficeTotal += movies[i].box_office; 
+      if (movies[i].released !== null){
+        moviesReleased.push(movies[i]);
+      }
+    }
+    //Cast data from json file
+    moviesReleased.forEach(function(d){
+      d.box_office = +d.box_office
+    });
+    let boxOfficeTotal = 0; 
+    for (var i = 0; i < moviesReleased.length; i++){
+        boxOfficeTotal += moviesReleased[i].box_office; 
     } 
-    
+    console.log(boxOfficeTotal);
+
     // Transition box office Total
-    d3.select(selector)
+    d3.select('#box_office').append('h2')
     .transition()
     .duration(2500)
     .on("start", function repeat() {
@@ -205,6 +244,14 @@ function drawBoxOffice(selector,url){
             return function(t) { that.text(formatNumber(i(t))); };
         });
     });
+
+    d3.select('#imdb-rank')
+    .append()
+    .html(` : ${rank}`);
+
+    d3.select('#actor-name')
+    .append()
+    .html(` : ${actorName}`);
 });
 };
 
@@ -238,7 +285,7 @@ var chartGroup = svg.append("g")
 d3.json(url).then(function(data){
   var movies = data[selection].movies;
   var moviesToCount = [];
-  moviesToCount=0
+  moviesToCount=0;
 
   for (var i = 0; i<movies.length; i++){
     if (movies[i].title !== null){
@@ -251,7 +298,7 @@ d3.json(url).then(function(data){
     .attr("y", 5)
     .attr("width", 100)
     .attr("height", moviesToCount)
-    .attr("fill", 'red');
+    .attr("fill", '#89334c');
 
   var text = chartGroup.selectAll("text")
     .data(movies)
@@ -262,38 +309,13 @@ d3.json(url).then(function(data){
     .attr("x",30)
     .attr("y", 5)
     .text( moviesToCount)
-    .attr("font-family", "sans-serif")
     .attr("font-size", "20px")
-    .attr("height", moviesToCount+100)
-    .attr("fill", "black");
+    .attr("height", moviesToCount*1.25)
+    .attr("fill", "#41404d");
 });
 };
 
-function tooltipOn(d) {
-    //x position of parent g element
-    let gParent = d3.select(this.parentElement)
-    let translateValue = gParent.attr("transform")
-    
-    let gX = translateValue.split(",")[0].split("(")[1]
-    let gY = height + (+d3.select(this).attr("cy")-50)
-    
-    d3.select(this)
-        .classed("selected", true)
-    tooltip.transition()
-            .duration(200)
-            .style("opacity", .9);
-    tooltip.html(`${d.title}<br/>Year Released: ${d.released}<br/>Credit: ${d.credit}<br/>Credit Type: ${d.type}`)
-        .style("left", gX + "px")
-        .style("top", gY + "px");
-}//tooltipOn
-    
-function tooltipOff(d) {
-    d3.select(this)
-        .classed("selected", false);
-        tooltip.transition()
-            .duration(500)
-            .style("opacity", 0);
-}//tooltipOff
+
 // Let selection equal selected Actor or Actress
 
 function init() {
@@ -301,16 +323,14 @@ function init() {
   var selector = d3.select("#selDataset");
 
   // Use the list of sample names to populate the select options
-  d3.json("Output/dropdown.json").then((names) => {
+  d3.json("../Output/dropdown.json").then((names) => {
     names.forEach((name) => {
       selector
         .append("option")
-        .text(`${name.name}   ${name.gender}`)
-        .property("value", `${name.name}   ${name.gender}`);
+        .text(`${name.name}_______Ranking: ${name.gender}`)
+        .property("value", name.name);
     });
 
-    // Use the first sample from the list to build the initial plots
-    let url = "/Morgan Freeman";
     drawBoxOffice('#boxoffice',url);
     drawDotplot('#dotplot',url);
     drawWordCloud('#wordcloud',url);
@@ -319,9 +339,11 @@ function init() {
 }
 
 function optionChanged(selection) {
-  let url = `/${selection}`;
-
-  drawBoxOffice('#boxoffice',url);
+  //Clear current
+  d3.selectAll("svg > *").remove();
+  // let url = `/${selection}`
+  //Build new
+  drawBoxOffice('#box_office',url);
   drawDotplot('#dotplot',url);
   drawWordCloud('#wordcloud',url);
   drawBar('#bar-chart',url);
