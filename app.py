@@ -32,7 +32,7 @@ app = Flask(__name__)
 # Flask Routes
 #################################################
 
-@app.route("/home")
+@app.route("/")
 def welcome():
     """Home Page."""
     return ("Home Page")
@@ -71,6 +71,22 @@ def actor(selection):
     actordictinner["movies"] = movies
  
     return jsonify(actordict)
+
+@app.route("/dropdown")
+def dropdown():
+    """Return data from the db"""
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+    dropdown = session.query(Actor.name,Actor.gender).distinct().all()
+    dropdownlist = []
+
+    for this in dropdown:
+        dropdowndict = {}
+        dropdowndict["name"] = (this[0])
+        dropdowndict["gender"] = (this[1])
+        dropdownlist.append(dropdowndict)  
+    
+    return jsonify(dropdownlist)    
 
 if __name__ == '__main__':
     app.run(debug=True)
