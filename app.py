@@ -57,7 +57,7 @@ def actor(selection):
         moviesdict["released"] = (this[8])
         moviesdict["credit"] = (this[3])
         moviesdict["runtime"] = (this[9])
-        moviesdict["genre(s)"] = (this[10])
+        moviesdict["genre"] = (this[10])
         moviesdict["plot"] = (this[4])
         moviesdict["imdb_rating"] = (this[5])
         moviesdict["rt_rating"] = (this[11])
