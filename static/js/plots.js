@@ -1,9 +1,6 @@
-
 // Let selection equal selected Actor or Actress
-// let selection = d3.select('#selDataset').text();
-let selection = "Morgan Freeman"
-// let url = `./${selection}`;
-let url = "../Output/query.json"
+let selection = d3.select('#selDataset').text();
+
 //tooltip
 const tooltip = d3.select("body")
     .append("div")
@@ -363,7 +360,7 @@ function init() {
   var selector = d3.select("#selDataset");
 
   // Use the list of sample names to populate the select options
-  d3.json("../Output/dropdown.json").then((names) => {
+  d3.json("/dropdown").then((names) => {
     names.forEach((name) => {
       selector
         .append("option")
@@ -383,7 +380,7 @@ function optionChanged(selection) {
   svg.selectAll("*").remove();
 
 
-  // let url = `/${selection}`
+  let url = `/${selection}`
   //Build new
   drawBoxOffice('#box_office',url);
   drawDotplot('#dotplot',url);
@@ -393,5 +390,3 @@ function optionChanged(selection) {
 
 // Initialize the dashboard
 init();
-
-
