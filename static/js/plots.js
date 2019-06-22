@@ -379,7 +379,7 @@ function init() {
 
 function optionChanged(selection) {
   //Clear current
-  svg.selectAll("*").remove();
+  d3.selectAll('svg').remove();
 
 
   let url = `/${selection}`
