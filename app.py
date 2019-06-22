@@ -89,7 +89,7 @@ def dropdown():
     for this in dropdown:
         dropdowndict = {}
         dropdowndict["name"] = (this[0])
-        dropdowndict["gender"] = (f"{(this[1])[0].upper()}{(this[1])[1:4]}")
+        dropdowndict["gender"] = (this[1].capitalize())
         dropdownlist.append(dropdowndict)  
     
     return jsonify(dropdownlist)    

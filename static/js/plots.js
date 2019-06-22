@@ -17,7 +17,7 @@ const t = d3.transition()
 function drawDotplot(selector,url){
     // set the dimensions and margins of the graph
     const svgWidth = 800;
-    const svgHeight = 600;
+    const svgHeight = 1000;
     
     const margin = {
         top: 100,
@@ -248,6 +248,7 @@ function drawBoxOffice(selector,url){
 
     // Transition box office Total
     d3.select('#box_office').html("");
+    d3.select('#box_office').append('h2').append().html("Box Office Total ($)");
     d3.select('#box_office').append('h2')
     .transition()
     .duration(2500)
@@ -261,6 +262,7 @@ function drawBoxOffice(selector,url){
     });
 
     d3.select('#imdb_rating').html("");
+    d3.select('#imdb_rating').append('h2').append().html("Average IMDb Score (Out of 100)");
     d3.select('#imdb_rating').append('h2')
     .transition()
     .duration(2500)
@@ -313,7 +315,7 @@ var chartGroup = svg.append("g")
   .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
 
 const y = d3.scaleLinear()
-  .domain([0,600])
+  .domain([0,800])
   .range([height, 0]);
 
 const yAxisGroup = chartGroup.append('g');
