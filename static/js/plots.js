@@ -1,9 +1,9 @@
 
 // Let selection equal selected Actor or Actress
 // let selection = d3.select('#selDataset').text();
-let selection = "Natalie Portman"
+let selection = "Morgan Freeman"
 // let url = `./${selection}`;
-let url = "../Output/query2.json"
+let url = "../Output/query.json"
 //tooltip
 const tooltip = d3.select("body")
     .append("div")
@@ -283,7 +283,7 @@ function drawBoxOffice(selector,url){
 function drawBar(selector,url){
 // Define SVG area dimensions
 var svgWidth = 120;
-var svgHeight = 700;
+var svgHeight = 1000;
 
 // Define the chart's margins as an object
 var chartMargin = {
@@ -307,6 +307,13 @@ var svg = d3.select(selector)
 var chartGroup = svg.append("g")
   .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
 
+const y = d3.scaleLinear()
+  .domain([0,600])
+  .range([height, 0]);
+
+const yAxisGroup = chartGroup.append('g');
+const yAxis = d3.axisLeft(y).ticks(10).tickFormat(d3.format("d"));;
+
 d3.json(url).then(function(data){
   var movies = data[selection].movies;
   var moviesToCount = [];
@@ -317,13 +324,19 @@ d3.json(url).then(function(data){
       moviesToCount = moviesToCount + 1;
     }
   }
+
+
   var rectangle = chartGroup
     .append("rect")
     .attr("x", 0)
-    .attr("y", 5)
+    .attr("y", height)
     .attr("width", 100)
-    .attr("height", moviesToCount)
-    .attr("fill", '#89334c');
+    .attr("height",0)
+    .transition()
+      .duration(2500)
+      .attr("height", height - y(moviesToCount))
+      .attr("y", y(moviesToCount))
+      .attr("fill", '#89334c');
 
   var text = chartGroup.selectAll("text")
     .data(movies)
@@ -335,8 +348,10 @@ d3.json(url).then(function(data){
     .attr("y", 5)
     .text( moviesToCount)
     .attr("font-size", "20px")
-    .attr("height", moviesToCount*1.25)
+    .attr("height", height)
     .attr("fill", "#41404d");
+
+    yAxisGroup.call(yAxis);    
 });
 };
 
