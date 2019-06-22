@@ -17,7 +17,7 @@ const t = d3.transition()
 function drawDotplot(selector,url){
     // set the dimensions and margins of the graph
     const svgWidth = 800;
-    const svgHeight = 800;
+    const svgHeight = 600;
     
     const margin = {
         top: 100,
