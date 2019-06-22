@@ -1,6 +1,8 @@
 // Let selection equal selected Actor or Actress
 let selection = d3.select('#selDataset').text();
 
+let url = `/${selection}`;
+
 //tooltip
 const tooltip = d3.select("body")
     .append("div")
