@@ -247,8 +247,7 @@ function drawBoxOffice(selector,url){
     
 
     // Transition box office Total
-    d3.select('#box_office').html("");
-    d3.select('#box_office').append('h2').append().html("Box Office Total ($)");
+    d3.select('#box_office').html("Total Box Office");
     d3.select('#box_office').append('h2')
     .transition()
     .duration(2500)
