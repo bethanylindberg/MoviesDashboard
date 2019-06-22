@@ -123,7 +123,8 @@ function drawDotplot(selector,url){
       svg.append("g")
       .attr("class","axis axis--x")
       .attr("transform","translate(0," + height + ")")
-      .call(d3.axisBottom(x)); 
+      .call(d3.axisBottom(x)
+      .tickFormat(d3.format("d"))); 
     
     });
 
@@ -135,7 +136,8 @@ function drawDotplot(selector,url){
               .style("opacity", .9);
       tooltip.html(`${d.title}<br/>Year Released: ${d.released}<br/>Credit: ${d.credit}<br/>Credit Type: ${d.type}`)
           .style("left", d3.event.pageX + "px")
-          .style("top", d3.event.pageY + "px");
+          .style("top", d3.event.pageY + "px")
+          .style("color", "#ffffff");
   }//tooltipOn
       
   function tooltipOff(d) {
@@ -245,6 +247,7 @@ function drawBoxOffice(selector,url){
     
 
     // Transition box office Total
+    d3.select('#box_office').html("");
     d3.select('#box_office').append('h2')
     .transition()
     .duration(2500)
@@ -257,6 +260,7 @@ function drawBoxOffice(selector,url){
         });
     });
 
+    d3.select('#imdb_rating').html("");
     d3.select('#imdb_rating').append('h2')
     .transition()
     .duration(2500)
@@ -269,10 +273,12 @@ function drawBoxOffice(selector,url){
         });
     });
 
+    d3.select('#imdb-rank').html("");
     d3.select('#imdb-rank')
     .append()
     .html(`IMDb Rank: ${rank}`);
 
+    d3.select('#actor-name').html("");
     d3.select('#actor-name')
     .append()
     .html(`Name: ${actorName}`);
@@ -377,10 +383,11 @@ function init() {
   });
 }
 
-function optionChanged(selection) {
+function optionChanged(inpSelection) {
   //Clear current
   d3.selectAll('svg').remove();
 
+  selection = inpSelection;
 
   let url = `/${selection}`
   //Build new
