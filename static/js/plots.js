@@ -1,9 +1,9 @@
 
 // Let selection equal selected Actor or Actress
 // let selection = d3.select('#selDataset').text();
-let selection = "Morgan Freeman"
+let selection = "Natalie Portman"
 // let url = `./${selection}`;
-let url = "../Output/query.json"
+let url = "../Output/query2.json"
 //tooltip
 const tooltip = d3.select("body")
     .append("div")
@@ -222,15 +222,28 @@ function drawBoxOffice(selector,url){
         moviesReleased.push(movies[i]);
       }
     }
+
+    let imdbScores = 0;
+    for (var i = 0; i < movies.length; i++){
+      if (movies[i].imdb_rating !== null){
+        imdbScores += 1;
+      }
+    }
+
+  
     //Cast data from json file
     moviesReleased.forEach(function(d){
-      d.box_office = +d.box_office
+      d.box_office = +d.box_office;
+      d.imdb_rating = +d.imdb_rating;
     });
+
     let boxOfficeTotal = 0; 
+    let totalIMDbScore = 0;
     for (var i = 0; i < moviesReleased.length; i++){
-        boxOfficeTotal += moviesReleased[i].box_office; 
+        boxOfficeTotal += moviesReleased[i].box_office;
+        totalIMDbScore += moviesReleased[i].imdb_rating;
     } 
-    console.log(boxOfficeTotal);
+    
 
     // Transition box office Total
     d3.select('#box_office').append('h2')
@@ -238,20 +251,32 @@ function drawBoxOffice(selector,url){
     .duration(2500)
     .on("start", function repeat() {
     d3.active(this)
-        .tween("text", function() {
+        .tween("html", function() {
             var that = d3.select(this),
                 i = d3.interpolateNumber(that.text().replace(/,/g, ""), boxOfficeTotal);
             return function(t) { that.text(formatNumber(i(t))); };
         });
     });
 
+    d3.select('#imdb_rating').append('h2')
+    .transition()
+    .duration(2500)
+    .on("start", function repeat() {
+    d3.active(this)
+        .tween("text", function() {
+            var that = d3.select(this),
+                i = d3.interpolateNumber(that.text().replace(/,/g, ""), totalIMDbScore/imdbScores);
+            return function(t) { that.text(formatNumber(i(t))); };
+        });
+    });
+
     d3.select('#imdb-rank')
     .append()
-    .html(` : ${rank}`);
+    .html(`IMDb Rank: ${rank}`);
 
     d3.select('#actor-name')
     .append()
-    .html(` : ${actorName}`);
+    .html(`Name: ${actorName}`);
 });
 };
 

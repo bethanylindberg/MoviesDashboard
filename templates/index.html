@@ -68,10 +68,10 @@ crossorigin="anonymous">
       <div class="row margin-top-50">
         <div class="row">
           <div class="col-md-8">
-            <h1 id="actor-name">Name</h1>
+            <h1 id="actor-name"></h1>
           </div>
           <div class="col-md-4">
-            <h2 id="imdb-rank">IMDb Rank</h2>
+            <h2 id="imdb-rank"></h2>
           </div>
         </div>
       </div>
@@ -87,7 +87,12 @@ crossorigin="anonymous">
             <div class="col-md-8" >
               <div id="wordcloud"><h2>Genres</h2></div>
             </div>
-            <div class="col-md-4" > <h3 id="box_office">Total Box Office</h3></div>
+            <div class="col-md-4 justify-content-center" > 
+              <h3 id="box_office">Total Box Office</h3>
+              <hr>
+              <h3 id="imdb_rating">Average IMDb Rating (out of 100)</h3>
+              <hr>
+            </div>
         </div>
           <div class="row">
               <div class="col-md-12" id="dotplot"><h2>Credits Timeline</h2></div>
