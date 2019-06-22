@@ -247,7 +247,7 @@ function drawBoxOffice(selector,url){
     
 
     // Transition box office Total
-    d3.select('#box_office').html("");
+    d3.select('#box_office').html("Total Box Office");
     d3.select('#box_office').append('h2')
     .transition()
     .duration(2500)
@@ -260,7 +260,7 @@ function drawBoxOffice(selector,url){
         });
     });
 
-    d3.select('#imdb_rating').html("");
+    d3.select('#imdb_rating').html("Average IMDb Rating (out of 100)");
     d3.select('#imdb_rating').append('h2')
     .transition()
     .duration(2500)
