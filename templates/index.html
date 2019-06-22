@@ -20,6 +20,8 @@ crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
+<script src="https://d3js.org/d3-time.v1.min.js"></script>
+<script src="https://d3js.org/d3-time-format.v2.min.js"></script>
 </head>
 
 <body>
@@ -50,7 +52,7 @@ crossorigin="anonymous">
                     <ul class="list-group" id="filters">
                       <li class="filter list-group-item">
                         <label for="date">Select a name from the dropdown</label>
-                        <select id="selDataset" onchange="optionChanged(this.value)" type="text" placeholder="Morgan Freeman"></select>
+                        <select id="selDataset" onchange="optionChanged(this.value)" type="text">Morgan Freeman</select>
                       </li>
                     </ul>
                   </div>

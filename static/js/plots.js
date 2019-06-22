@@ -1,4 +1,6 @@
 
+// Let selection equal selected Actor or Actress
+// let selection = d3.select('#selDataset').text();
 let selection = "Morgan Freeman"
 // let url = `./${selection}`;
 let url = "../Output/query.json"
@@ -15,8 +17,8 @@ const t = d3.transition()
 
 function drawDotplot(selector,url){
     // set the dimensions and margins of the graph
-    const svgWidth = 500;
-    const svgHeight = 200;
+    const svgWidth = 800;
+    const svgHeight = 600;
     
     const margin = {
         top: 100,
@@ -50,9 +52,12 @@ function drawDotplot(selector,url){
           moviesReleased.push(movies[i]);
         }
       }
+
       //Cast data from json file
       moviesReleased.forEach(function(d){
         d.title = d.title;
+        // d.released = d3.timeFormat("%Y-%m-%d").parse(d.released).getFullYear();
+        // console.log(d.released);
         d.released = parseInt((d.released).slice(0,4));
       });
       // Configure x scale
@@ -94,12 +99,13 @@ function drawDotplot(selector,url){
                     released: p.released,
                     type: p.type,
                     credit: p.credit,
-                    radius: (x(d.x1)-x(d.x0))
+                    radius: (x(d.x1)-x(d.x0))/2
                   }
           }))
         .enter()
         .append("circle")
           .attr("class", "enter")
+          .attr("fill",'#41404d')
           .attr("cx", 0) //g element already at correct x pos
           .attr("cy", function(d) {
               return - d.idx * 2 * d.radius - d.radius; })
@@ -108,7 +114,8 @@ function drawDotplot(selector,url){
           .on("mouseout", tooltipOff)
           .transition()
             .duration(500)
-            .attr("r", 10)
+            .attr("r", function(d) {
+              return (d.length==0) ? 0 : d.radius; });
     
       binContainerEnter.merge(binContainer)
           .attr("transform", d => `translate(${x(d.x0)}, ${height})`)
@@ -122,21 +129,14 @@ function drawDotplot(selector,url){
     });
 
     function tooltipOn(d) {
-      //x position of parent g element
-      let gParent = d3.select(this.parentElement)
-      let translateValue = gParent.attr("transform")
-      
-      let gX = translateValue.split(",")[0].split("(")[1]
-      let gY = height + (+d3.select(this).attr("cy")-50)
-      
       d3.select(this)
           .classed("selected", true)
       tooltip.transition()
               .duration(200)
               .style("opacity", .9);
       tooltip.html(`${d.title}<br/>Year Released: ${d.released}<br/>Credit: ${d.credit}<br/>Credit Type: ${d.type}`)
-          .style("left", gX + "px")
-          .style("top", gY + "px");
+          .style("left", d3.event.pageX + "px")
+          .style("top", d3.event.pageY + "px");
   }//tooltipOn
       
   function tooltipOff(d) {
@@ -182,7 +182,7 @@ function drawWordCloud(selector,url){
                 .domain([0,1,2,15,20,155])
                 .range(["#89334c", "#41404d",  "#9b742d", "#7d7977", "#92a19f"]);
     
-        d3.layout.cloud().size([500, 200])
+        d3.layout.cloud().size([600, 250])
                 .timeInterval(20)
                 .words(frequency)
                 .rotate(0)
@@ -196,7 +196,7 @@ function drawWordCloud(selector,url){
                     .attr("height", 250)
                     .attr("class", "wordcloud")
                     .append("g")
-                    .attr("transform", "translate(225,100)")
+                    .attr("transform", "translate(200,150)")
                     .selectAll("text")
                     .data(words)
                     .enter().append("text")
@@ -257,8 +257,8 @@ function drawBoxOffice(selector,url){
 
 function drawBar(selector,url){
 // Define SVG area dimensions
-var svgWidth = window.innerWidth * .3;
-var svgHeight = window.innerHeight * .3;
+var svgWidth = 120;
+var svgHeight = 700;
 
 // Define the chart's margins as an object
 var chartMargin = {
@@ -316,7 +316,7 @@ d3.json(url).then(function(data){
 };
 
 
-// Let selection equal selected Actor or Actress
+
 
 function init() {
   // Grab a reference to the dropdown select element
@@ -327,7 +327,7 @@ function init() {
     names.forEach((name) => {
       selector
         .append("option")
-        .text(`${name.name}_______Ranking: ${name.gender}`)
+        .text(`${name.name} Ranking: ${name.gender}`)
         .property("value", name.name);
     });
 
@@ -340,7 +340,9 @@ function init() {
 
 function optionChanged(selection) {
   //Clear current
-  d3.selectAll("svg > *").remove();
+  svg.selectAll("*").remove();
+
+
   // let url = `/${selection}`
   //Build new
   drawBoxOffice('#box_office',url);

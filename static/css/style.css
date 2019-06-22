@@ -3,9 +3,9 @@
   font-family: Ubuntu, sans-serif;
 }
 
-.container{
+/* .container{
   word-wrap: break-word;
-}
+} */
 .row{
   background:white;
   color:black;
@@ -108,7 +108,7 @@ select {
   padding: 20px;
   margin: 0;
   background: #41404d;
-  background-image: url("../images/asset 2.png");
+  background-image: url("../images/asset_1.png");
   background-attachment: fixed;
   background-position: bottom center;
   background-size: cover;
@@ -250,5 +250,5 @@ div.tooltip {
 
 svg{
     display: block;
-    margin: auto;
+    margin: 20px;
 }
