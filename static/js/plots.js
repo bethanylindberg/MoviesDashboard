@@ -3,6 +3,7 @@ let selection = d3.select('#selDataset').text();
 
 let url = `/${selection}`;
 
+
 //tooltip
 const tooltip = d3.select("body")
     .append("div")
@@ -33,8 +34,9 @@ function drawDotplot(selector,url){
     const svg = d3
         .select(selector)
         .append("svg")
-        .attr("width", svgWidth)
-        .attr("height", svgHeight);
+        .attr('viewBox',`0 0 ${width} ${height}`)
+        .attr("width", svgWidth*.8)
+        .attr("height", svgHeight*.8);
     
     // Append an SVG group
     const chartGroup = svg.append("g")
@@ -46,6 +48,7 @@ function drawDotplot(selector,url){
       let movies = data[selection].movies;
       // Filter out movies with no release date
       let moviesReleased = [];
+
       for (var i = 0; i < movies.length; i++){
         if (movies[i].released !== null){
           moviesReleased.push(movies[i]);
@@ -59,17 +62,26 @@ function drawDotplot(selector,url){
         // console.log(d.released);
         d.released = parseInt((d.released).slice(0,4));
       });
+
+      let minYear = 2200;
+      let maxYear = 0
+      for (var i = 0; i < moviesReleased.length; i++){
+        if (moviesReleased[i].released !== null){
+          if(moviesReleased[i].released < minYear){
+            minYear = moviesReleased[i].released;
+          }
+          if(moviesReleased[i].released > maxYear){
+            maxYear = moviesReleased[i].released;
+          }
+        }
+      }
+
       // Configure x scale
       let x = d3.scaleLinear()
               .range([5,width])
               .domain(d3.extent(moviesReleased, d => d.released));
     
-      //number of bins for histogram unique years
-      const unique = (value, index, self) => {
-        return self.indexOf(value) === index;
-      }
-      let years = moviesReleased.map(i => i.released).filter(unique);
-      let nbins = years.length;
+      let nbins = maxYear - minYear + 1;
     
       //histogram binning
       let histogram = d3.histogram()
@@ -77,7 +89,7 @@ function drawDotplot(selector,url){
         .thresholds(x.ticks(nbins))
         .value(d => d.released);
       //binning data and filtering out empty bins
-      let bins = histogram(moviesReleased).filter(d => d.length>0);
+      let bins = histogram(moviesReleased);
     
       //g container for each bin
       let binContainer = svg.selectAll(".gBin")
@@ -88,7 +100,7 @@ function drawDotplot(selector,url){
       let binContainerEnter = binContainer.enter()
         .append("g")
           .attr("class", "gBin")
-          .attr("transform", d => `translate(${x(d.x0)}, ${height})`)
+          .attr("transform", d => `translate(${x(d.x0)}, ${height})`);
     
       //populate bin containers
       binContainerEnter.selectAll("circle")
@@ -289,7 +301,7 @@ function drawBoxOffice(selector,url){
 function drawBar(selector,url){
 // Define SVG area dimensions
 var svgWidth = 120;
-var svgHeight = 1000;
+var svgHeight = 700;
 
 // Define the chart's margins as an object
 var chartMargin = {
@@ -367,7 +379,7 @@ d3.json(url).then(function(data){
 function init() {
   // Grab a reference to the dropdown select element
   var selector = d3.select("#selDataset");
-
+  
   // Use the list of sample names to populate the select options
   d3.json("/dropdown").then((names) => {
     names.forEach((name) => {
